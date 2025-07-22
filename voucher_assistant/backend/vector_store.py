@@ -42,8 +42,8 @@ class VectorStore:
     
     def __init__(self):
         self.es_url = os.getenv('ELASTICSEARCH_URL', 'http://localhost:9200')
-        self.index_name = os.getenv('ELASTICSEARCH_INDEX', 'voucher_knowledge_base')
-        self.embedding_model_name = os.getenv('EMBEDDING_MODEL', 'dangvantuan/vietnamese-embedding')  # Use Vietnamese model first
+        self.index_name = os.getenv('ELASTICSEARCH_INDEX', 'voucher_knowledge')
+        self.embedding_model_name = os.getenv('EMBEDDING_MODEL', 'keepitreal/vietnamese-sbert')  # Use Vietnamese model first
         self.embedding_dimension = int(os.getenv('EMBEDDING_DIMENSION', '768'))
         self.max_context_length = int(os.getenv('MAX_CONTEXT_LENGTH', '4000'))
         self.top_k = int(os.getenv('TOP_K_RESULTS', '5'))
@@ -97,7 +97,10 @@ class VectorStore:
             # Ensure correct embedding dimension for dangvantuan/vietnamese-embedding
             if "dangvantuan/vietnamese-embedding" in self.embedding_model_name:
                 self.embedding_dimension = 768
-            
+                
+            if "keepitreal/vietnamese-sbert" in self.embedding_model_name:
+                self.embedding_dimension = 768
+                
             logger.info(f"✅ Vietnamese embedding model đã sẵn sàng! Dimension: {self.embedding_dimension}")
             self.is_ready = True
             return True

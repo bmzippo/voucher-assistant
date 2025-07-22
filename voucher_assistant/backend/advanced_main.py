@@ -11,6 +11,7 @@ import logging
 import asyncio
 import time
 from datetime import datetime
+import os
 
 # Import advanced modules
 from advanced_vector_store import AdvancedVectorStore, EmbeddingWeights
@@ -70,8 +71,8 @@ async def startup_event():
         # Initialize advanced vector store
         advanced_vector_store = AdvancedVectorStore(
             es_url="http://localhost:9200",
-            embedding_model="dangvantuan/vietnamese-embedding",
-            index_name="oneu_vouchers_advanced"
+            embedding_model= os.getenv("EMBEDDING_MODEL","keepitreal/vietnamese-sbert"),
+            index_name=os.getenv("ELASTICSEARCH_INDEX","vouchers_advanced")
         )
         
         # Initialize query parser

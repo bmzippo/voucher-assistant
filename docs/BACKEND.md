@@ -175,7 +175,7 @@ class AdvancedVectorStore:
     
     def __init__(self, es_url: str = "http://localhost:9200", 
                  embedding_model: str = "dangvantuan/vietnamese-embedding",
-                 index_name: str = "oneu_vouchers_advanced"):
+                 index_name: str = "vouchers_advanced"):
         self.es_url = es_url
         self.es = Elasticsearch([es_url])
         self.index_name = index_name
@@ -531,7 +531,7 @@ curl http://localhost:9200/_cluster/health
 python voucher_assistant/backend/data_processing/main_indexer.py
 
 # Verify indexing
-curl "http://localhost:9200/oneu_vouchers_advanced/_count"
+curl "http://localhost:9200/vouchers_advanced/_count"
 ```
 
 ### 4. Run Development Server

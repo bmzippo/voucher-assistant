@@ -7,13 +7,14 @@ import json
 from elasticsearch import Elasticsearch
 from sentence_transformers import SentenceTransformer
 import time
+import os
 
 class SearchComparison:
     def __init__(self):
-        self.es = Elasticsearch(["http://localhost:9200"], verify_certs=False, request_timeout=30)
-        self.model = SentenceTransformer("dangvantuan/vietnamese-embedding")
-        self.index_name = "voucher_knowledge_base"
-    
+        self.es = Elasticsearch([os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")], verify_certs=False, request_timeout=30)
+        self.model = SentenceTransformer(os.getenv("EMBEDDING_MODEL", "keepitreal/vietnamese-sbert"))
+        self.index_name = os.getenv("ELASTICSEARCH_INDEX", "voucher_knowledge")
+
     def search_and_compare(self, queries):
         print("🔍 SO SÁNH VECTOR SEARCH VỚI CÁC QUERY KHÁC NHAU")
         print("=" * 70)

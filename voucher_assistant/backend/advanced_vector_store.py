@@ -10,6 +10,7 @@ from sentence_transformers import SentenceTransformer
 from elasticsearch import Elasticsearch
 import json
 import re
+import os
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
@@ -40,8 +41,8 @@ class AdvancedVectorStore:
     """
     
     def __init__(self, es_url: str = "http://localhost:9200", 
-                 embedding_model: str = "dangvantuan/vietnamese-embedding",
-                 index_name: str = "oneu_vouchers_advanced"):
+                 embedding_model: str = os.getenv("EMBEDDING_MODEL", "keepitreal/vietnamese-sbert"),
+                 index_name: str = os.getenv("ELASTICSEARCH_INDEX", "vouchers_advanced")):
         self.es_url = es_url
         self.es = Elasticsearch([es_url])
         self.index_name = index_name

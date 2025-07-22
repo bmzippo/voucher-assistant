@@ -26,8 +26,8 @@ async def load_voucher_data():
     logger.info("🚀 Initializing Advanced Vector Store...")
     advanced_store = AdvancedVectorStore(
         es_url="http://localhost:9200",
-        embedding_model="dangvantuan/vietnamese-embedding",
-        index_name="oneu_vouchers_advanced_v2"
+        embedding_model= os.getenv("EMBEDDING_MODEL","keepitreal/vietnamese-sbert"),
+        index_name=os.getenv('ELASTICSEARCH_INDEX', 'voucher_knowledge')
     )
     
     location_indexer = LocationAwareIndexer()

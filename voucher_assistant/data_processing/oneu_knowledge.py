@@ -84,7 +84,7 @@ COMMON_QUESTIONS = {
 
 RESPONSE_TEMPLATES = {
     "no_information": "Xin lỗi, tôi không tìm thấy thông tin cụ thể về vấn đề này trong điều khoản voucher. Vui lòng liên hệ hotline 1900 558 865 để được hỗ trợ chi tiết.",
-    "contact_support": "Để được hỗ trợ tốt nhất, bạn có thể liên hệ:\n- Hotline: 1900 558 865\n- Email: support@oneu.vn\n- Thời gian hỗ trợ: 8:00 - 22:00 hàng ngày",
+    "contact_support": "Để được hỗ trợ tốt nhất, bạn có thể liên hệ:\n- Hotline: 1900 558 865\n- Email: support@abc.vn\n- Thời gian hỗ trợ: 8:00 - 22:00 hàng ngày",
     "general_usage": "Để sử dụng voucher:\n1. Mở ứng dụng  \n2. Tìm và chọn voucher\n3. Đến cửa hàng/nhà hàng\n4. Xuất trình voucher cho nhân viên\n5. Thanh toán theo hướng dẫn"
 }
 

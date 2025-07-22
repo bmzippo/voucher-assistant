@@ -15,7 +15,7 @@
 ### Base URL
 ```
 Development: http://localhost:8001
-Production: https://api.oneu.com/voucher-assistant
+Production: https://api.com/voucher-assistant
 ```
 
 ### Authentication
@@ -368,7 +368,7 @@ interface ErrorResponse {
     "message": "An internal error occurred. Please try again.",
     "details": {
       "error_id": "err_123456",
-      "support_contact": "support@oneu.com"
+      "support_contact": "support@abc.com"
     },
     "timestamp": "2025-07-22T10:30:00Z"
   }

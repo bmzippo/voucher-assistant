@@ -13,7 +13,7 @@ class Settings:
     
     # Elasticsearch Configuration
     ELASTICSEARCH_URL: str = os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")
-    ELASTICSEARCH_INDEX: str = "voucher_knowledge_base"
+    ELASTICSEARCH_INDEX: str = os.getenv("ELASTICSEARCH_INDEX", "voucher_knowledge")
     
     # Google Cloud Configuration
     GOOGLE_PROJECT_ID: str = os.getenv("GOOGLE_PROJECT_ID", "")
@@ -22,16 +22,19 @@ class Settings:
     
     # Embedding Configuration
     # EMBEDDING_MODEL: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-    EMBEDDING_MODEL: str = "dangvantuan/vietnamese-embedding"
-    EMBEDDING_DIMENSION: int = 768
-    
+    # EMBEDDING_MODEL: str = "dangvantuan/vietnamese-embedding"
+    # EMBEDDING_DIMENSION: int = 768
+
+    EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "keepitreal/vietnamese-sbert")
+    EMBEDDING_DIMENSION: int = os.getenv("EMBEDDING_DIMENSION", 768)
+
     # RAG Configuration
     MAX_CONTEXT_LENGTH: int = 4000
     TOP_K_RESULTS: int = 5
     CONFIDENCE_THRESHOLD: float = 0.7
     
     #   Specific Configuration
-    ONEU_KNOWLEDGE_BASE_PATH: str = "data/oneu_knowledge/"
+    KNOWLEDGE_BASE_PATH: str = "data/knowledge/"
     UPOINT_RULES_PATH: str = "data/upoint_rules.json"
     PAYMENT_METHODS_PATH: str = "data/payment_methods.json"
     

@@ -9,12 +9,13 @@ from elasticsearch import Elasticsearch
 from sentence_transformers import SentenceTransformer
 from typing import List, Dict
 import time
+import os
 
 class VoucherVectorSearchDemo:
     def __init__(self):
-        self.es_url = "http://localhost:9200"
-        self.index_name = "voucher_knowledge_base"
-        self.model_name = "dangvantuan/vietnamese-embedding"
+        self.es_url = os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")
+        self.index_name = os.getenv("ELASTICSEARCH_INDEX", "voucher_knowledge")
+        self.model_name = os.getenv("EMBEDDING_MODEL", "keepitreal/vietnamese-sbert")
         
         # Initialize components
         self.es = Elasticsearch([self.es_url], verify_certs=False, request_timeout=30)

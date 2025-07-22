@@ -3,12 +3,18 @@
 > **  AI Voucher Assistant - Data Pipeline & Processing Guide**
 
 ## 📋 Table of Contents
-- [Project Structure](#project-structure)
-- [Data Pipeline Overview](#data-pipeline-overview)
-- [Core Components](#core-components)
-- [Data Processing Workflows](#data-processing-workflows)
-- [ETL Operations](#etl-operations)
-- [Performance & Monitoring](#performance--monitoring)
+- [📊 Data Processing Guide](#-data-processing-guide)
+  - [📋 Table of Contents](#-table-of-contents)
+  - [📁 Project Structure](#-project-structure)
+  - [🔄 Data Pipeline Overview](#-data-pipeline-overview)
+    - [1. Main Indexer Orchestrator](#1-main-indexer-orchestrator)
+    - [2. Data Loader](#2-data-loader)
+    - [3. Data Cleaner](#3-data-cleaner)
+    - [4. Embedding Processor](#4-embedding-processor)
+  - [🚀 Running the Data Pipeline](#-running-the-data-pipeline)
+    - [Command Line Usage](#command-line-usage)
+    - [Programmatic Usage](#programmatic-usage)
+    - [Monitoring and Logging](#monitoring-and-logging)
 
 ## 📁 Project Structure
 
@@ -90,7 +96,7 @@ class ProcessingConfig:
     enable_validation: bool = True
     skip_existing: bool = True
     embedding_model: str = "dangvantuan/vietnamese-embedding"
-    index_name: str = "oneu_vouchers_advanced"
+    index_name: str = "vouchers_advanced"
 
 class DataProcessingPipeline:
     """
@@ -235,7 +241,7 @@ async def main():
     parser.add_argument("--directory", help="Directory containing Excel files")
     parser.add_argument("--batch-size", type=int, default=100, help="Batch size for processing")
     parser.add_argument("--workers", type=int, default=4, help="Number of worker processes")
-    parser.add_argument("--index", default="oneu_vouchers_advanced", help="Elasticsearch index name")
+    parser.add_argument("--index", default="vouchers_advanced", help="Elasticsearch index name")
     
     args = parser.parse_args()
     
@@ -994,7 +1000,7 @@ python data_processing/main_indexer.py --files data/voucher1.xlsx data/voucher2.
 python data_processing/main_indexer.py --directory data/ --batch-size 50
 
 # Custom index name
-python data_processing/main_indexer.py --files data/vouchers.xlsx --index oneu_vouchers_production
+python data_processing/main_indexer.py --files data/vouchers.xlsx --index vouchers_production
 ```
 
 ### Programmatic Usage
