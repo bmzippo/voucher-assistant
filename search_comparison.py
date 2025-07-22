@@ -12,7 +12,7 @@ import os
 class SearchComparison:
     def __init__(self):
         self.es = Elasticsearch([os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")], verify_certs=False, request_timeout=30)
-        self.model = SentenceTransformer(os.getenv("EMBEDDING_MODEL", "keepitreal/vietnamese-sbert"))
+        self.model = SentenceTransformer(os.getenv("EMBEDDING_MODEL", "dangvantuan/vietnamese-embedding"))
         self.index_name = os.getenv("ELASTICSEARCH_INDEX", "voucher_knowledge")
 
     def search_and_compare(self, queries):

@@ -26,7 +26,7 @@ async def load_voucher_data():
     logger.info("🚀 Initializing Advanced Vector Store...")
     advanced_store = AdvancedVectorStore(
         es_url="http://localhost:9200",
-        embedding_model= os.getenv("EMBEDDING_MODEL","keepitreal/vietnamese-sbert"),
+        embedding_model= os.getenv("EMBEDDING_MODEL","dangvantuan/vietnamese-embedding"),
         index_name=os.getenv('ELASTICSEARCH_INDEX', 'voucher_knowledge')
     )
     
@@ -44,6 +44,7 @@ async def load_voucher_data():
         success_count = 0
         for idx, row in df.iterrows():
             try:
+                
                 # Convert row to dictionary and clean
                 voucher_data = {
                     'voucher_id': f"voucher_{idx + 1}",
@@ -57,9 +58,26 @@ async def load_voucher_data():
                     'merchant': str(row.get('Merrchant', '')).strip()  # Note: typo in original Excel
                 }
                 
+                 # Tạo nội dung từ các cột
+                content_parts = []
+                for col in df.columns:
+                    if pd.notna(row[col]) and str(row[col]).strip():
+                        content_parts.append(f"{col}: {str(row[col]).strip()}")
+                
+                content = " | ".join(content_parts)
+                 # Đảm bảo content không rỗng
+                if not content.strip():
+                    logger.warning(f"⚠️ Voucher {idx} có nội dung rỗng, bỏ qua")
+                    continue
+                
+                
+                
                 # Skip empty vouchers
                 if not voucher_data['voucher_name'] or voucher_data['voucher_name'] == 'nan':
                     continue
+                
+                voucher_data['content'] = content               
+                 
                 
                 # Handle NaN location
                 if voucher_data['location'] == 'nan' or not voucher_data['location']:

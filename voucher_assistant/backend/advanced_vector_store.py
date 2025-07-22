@@ -41,8 +41,8 @@ class AdvancedVectorStore:
     """
     
     def __init__(self, es_url: str = "http://localhost:9200", 
-                 embedding_model: str = os.getenv("EMBEDDING_MODEL", "keepitreal/vietnamese-sbert"),
-                 index_name: str = os.getenv("ELASTICSEARCH_INDEX", "vouchers_advanced")):
+                 embedding_model: str = os.getenv("EMBEDDING_MODEL","dangvantuan/vietnamese-embedding"),
+                 index_name: str = os.getenv('ELASTICSEARCH_INDEX', 'voucher_knowledge')):
         self.es_url = es_url
         self.es = Elasticsearch([es_url])
         self.index_name = index_name
@@ -51,7 +51,7 @@ class AdvancedVectorStore:
         self.weights = EmbeddingWeights()
         
         # Initialize embedding model
-        self.model = SentenceTransformer(embedding_model)
+        self.model = SentenceTransformer(embedding_model)        
         logger.info(f"🤖 Advanced Vector Store initialized with model: {embedding_model}")
         
         # Create advanced index mapping
@@ -63,8 +63,17 @@ class AdvancedVectorStore:
             "mappings": {
                 "properties": {
                     "voucher_id": {"type": "keyword"},
-                    "voucher_name": {"type": "text", "analyzer": "vietnamese"},
-                    "content": {"type": "text", "analyzer": "vietnamese"},
+                    "voucher_name": {
+                        "type": "text", 
+                        "analyzer": "vietnamese",
+                        "fields": {
+                            "keyword": {"type": "keyword"}
+                        }
+                    },
+                    "content": {
+                        "type": "text", 
+                        "analyzer": "vietnamese"
+                    },
                     
                     # Multi-field embeddings
                     "content_embedding": {
@@ -122,6 +131,21 @@ class AdvancedVectorStore:
                     
                     "target_audience": {"type": "keyword"},
                     "keywords": {"type": "keyword"},
+                            
+                    # Additional fields for voucher details
+                    "usage_instructions": {
+                        "type": "text",
+                        "analyzer": "vietnamese"
+                    },
+                    "terms_conditions": {
+                        "type": "text", 
+                        "analyzer": "vietnamese"
+                    },
+                    "merchant": {"type": "keyword"},
+                    "validity_period": {"type": "keyword"},
+                    
+                    # Metadata
+                    "metadata": {"type": "object"},
                     "created_at": {"type": "date"},
                     "updated_at": {"type": "date"}
                 }
@@ -134,7 +158,9 @@ class AdvancedVectorStore:
                             "filter": ["lowercase", "stop"]
                         }
                     }
-                }
+                },
+                "number_of_shards": 1,
+                "number_of_replicas": 0
             }
         }
         

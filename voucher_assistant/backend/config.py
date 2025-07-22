@@ -25,7 +25,7 @@ class Settings:
     # EMBEDDING_MODEL: str = "dangvantuan/vietnamese-embedding"
     # EMBEDDING_DIMENSION: int = 768
 
-    EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "keepitreal/vietnamese-sbert")
+    EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "dangvantuan/vietnamese-embedding")
     EMBEDDING_DIMENSION: int = os.getenv("EMBEDDING_DIMENSION", 768)
 
     # RAG Configuration

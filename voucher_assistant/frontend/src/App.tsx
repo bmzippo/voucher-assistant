@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import VoucherSummary from './components/VoucherSummary';
 import ChatInterface from './components/ChatInterface';
 import VectorSearch from './components/VectorSearch';
+import AdvancedVoucherSearch from './components/AdvancedVoucherSearch';
 import FeedbackWidget from './components/FeedbackWidget';
 import { FiCpu, FiMessageSquare, FiGift, FiZap } from 'react-icons/fi';
 
@@ -188,7 +189,7 @@ function App() {
           </StatusIndicator>
         </div>
       </Header>
-
+    
       <VoucherSelector>
         <VoucherSelect
           value={selectedVoucher}
@@ -205,7 +206,7 @@ function App() {
 
       {selectedVoucher && (
         <>
-          <MainContent>
+          {/* <MainContent>
             <Section>
               <SectionHeader>
                 <FiGift />
@@ -224,7 +225,7 @@ function App() {
                 voucherName={selectedVoucherData?.name}
               />
             </Section>
-          </MainContent>
+          </MainContent> */}
           
           {/* Vector Search Section */}
           <div style={{ maxWidth: '1200px', margin: '24px auto 0 auto' }}>
@@ -236,6 +237,17 @@ function App() {
               <VectorSearch />
             </Section>
           </div>
+
+          {/* Advanced Search Section */}
+          <div style={{ maxWidth: '1200px', margin: '24px auto 0 auto' }}>
+            <Section>
+              <SectionHeader>
+                <FiZap />
+                Tìm kiếm Nâng cao
+              </SectionHeader>
+              <AdvancedVoucherSearch />
+            </Section>
+          </div>                        
           
           {/* Feedback Widget */}
           <div style={{ maxWidth: '1200px', margin: '24px auto 0 auto' }}>

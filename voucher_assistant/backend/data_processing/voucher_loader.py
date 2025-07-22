@@ -43,7 +43,8 @@ class VoucherDataLoader:
                     'tags': str(row.get('Tags', '')).strip(),
                     'merchant': str(row.get('Merrchant', '')).strip(),
                     'unit': str(row.get('Unit', '')).strip(),
-                    'source_file': 'temp_voucher.xlsx'
+                    'source_file': 'temp_voucher.xlsx',
+                    'content': str(row.get('Desc', '')).strip() + ". " + str(row.get('TermOfUse', '')).strip() + ". " + str(row.get('Usage', '')).strip()
                 }
                 
                 # Skip empty vouchers
@@ -92,7 +93,7 @@ class VoucherDataLoader:
                     'voucher_id': f"import_{file_name.replace('.xlsx', '')}_{idx + 1}",
                     'voucher_name': str(row.get('Name', '')).strip(),
                     'location': str(row.get('Location', 'Hà Nội')).strip(),
-                    'description': str(row.get('Description', '')).strip(),
+                    'description': str(row.get('Description', '')).strip(),                    
                     'terms_conditions': str(row.get('Terms', '')).strip(),
                     'usage': '',  # Not available in import files
                     'price': str(row.get('Price', '')).strip(),
@@ -100,8 +101,10 @@ class VoucherDataLoader:
                     'merchant': str(row.get('Merchant', '')).strip(),
                     'category': str(row.get('Category', '')).strip(),
                     'unit': '',  # Not available in import files
-                    'source_file': file_name
+                    'source_file': file_name,
+                    'content': str(row.get('Description', '')).strip() + ". " + str(row.get('Terms', '')).strip() + ". " + str(row.get('Usage', '')).strip()
                 }
+
                 
                 # Skip empty vouchers
                 if voucher_data['voucher_name'] and voucher_data['voucher_name'] != 'nan':

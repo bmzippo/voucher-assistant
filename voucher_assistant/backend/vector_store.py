@@ -43,7 +43,7 @@ class VectorStore:
     def __init__(self):
         self.es_url = os.getenv('ELASTICSEARCH_URL', 'http://localhost:9200')
         self.index_name = os.getenv('ELASTICSEARCH_INDEX', 'voucher_knowledge')
-        self.embedding_model_name = os.getenv('EMBEDDING_MODEL', 'keepitreal/vietnamese-sbert')  # Use Vietnamese model first
+        self.embedding_model_name = os.getenv('EMBEDDING_MODEL', 'dangvantuan/vietnamese-embedding')  # Use Vietnamese model first
         self.embedding_dimension = int(os.getenv('EMBEDDING_DIMENSION', '768'))
         self.max_context_length = int(os.getenv('MAX_CONTEXT_LENGTH', '4000'))
         self.top_k = int(os.getenv('TOP_K_RESULTS', '5'))
@@ -180,6 +180,19 @@ class VectorStore:
                 embedding = self.model.encode(text, convert_to_tensor=False)
                 if isinstance(embedding, np.ndarray):
                     embedding = embedding.tolist()
+                
+                # Handle dimension mismatch - pad or truncate to match index
+                if len(embedding) != self.embedding_dimension:
+                    logger.warning(f"⚠️ Embedding dimension mismatch: model={len(embedding)}, index={self.embedding_dimension}")
+                    if len(embedding) < self.embedding_dimension:
+                        # Pad with zeros
+                        embedding.extend([0.0] * (self.embedding_dimension - len(embedding)))
+                        logger.info(f"🔧 Padded embedding to {self.embedding_dimension} dimensions")
+                    else:
+                        # Truncate
+                        embedding = embedding[:self.embedding_dimension]
+                        logger.info(f"🔧 Truncated embedding to {self.embedding_dimension} dimensions")
+                
                 return embedding
             
             # Use TF-IDF if available
@@ -286,7 +299,7 @@ class VectorStore:
                     "script_score": {
                         "query": {"match_all": {}},
                         "script": {
-                            "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
+                            "source": "cosineSimilarity(params.query_vector, 'content_embedding') + 1.0",
                             "params": {"query_vector": query_embedding}
                         }
                     }
@@ -301,8 +314,9 @@ class VectorStore:
             # 4. Xử lý và format kết quả với location boosting
             results = []
             for hit in response.get('hits', {}).get('hits', []):
+                # ES cosine similarity score (đã được +1.0 trong query)
                 raw_score = hit['_score']
-                normalized_score = raw_score - 1.0  # Normalize về 0-1
+                normalized_score = raw_score / 2.0  # Chuyển từ [0,2] về [0,1] cho cosine similarity
                 
                 # Apply location boosting if detected
                 if extracted_location and location_boost:
@@ -324,7 +338,7 @@ class VectorStore:
                 logger.debug(f"Vector search hit: {hit['_source'].get('voucher_name', '')[:50]}... | raw_score: {raw_score:.4f} | final: {normalized_score:.4f}")
                 
                 # Chỉ lấy kết quả có độ tương đồng cao - sử dụng min_score thấp hơn cho tiếng Việt
-                effective_min_score = min(min_score, 0.2)  # Đảm bảo có kết quả cho Vietnamese embedding
+                effective_min_score = min(min_score, 0.4)  # Score range 0-1, min_score reasonable
                 if normalized_score >= effective_min_score:
                     result_item = {
                         'voucher_id': hit['_source'].get('voucher_id'),
@@ -438,7 +452,7 @@ class VectorStore:
                     "script_score": {
                         "query": {"match_all": {}},
                         "script": {
-                            "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
+                            "source": "cosineSimilarity(params.query_vector, 'content_embedding') + 1.0",
                             "params": {"query_vector": query_embedding}
                         }
                     }
@@ -475,8 +489,14 @@ class VectorStore:
     async def _execute_search(self, search_body: Dict[str, Any]) -> Dict[str, Any]:
         """Thực hiện search query với error handling"""
         try:
+            # Log chi tiết query gửi xuống ES
+            logger.info(f"📤 ES Query Body:")
+            logger.info(f"Index: {self.index_name}")
+            logger.info(f"Query: {json.dumps(search_body, indent=2, ensure_ascii=False)}")
+            
             if hasattr(self.es, 'search'):
                 response = self.es.search(index=self.index_name, body=search_body)
+                logger.info(f"✅ ES Response: {response.get('hits', {}).get('total', 'unknown')} hits found")
                 return response
             else:
                 logger.error("❌ Elasticsearch client không hỗ trợ search method")
@@ -484,6 +504,7 @@ class VectorStore:
                 
         except Exception as e:
             logger.error(f"❌ Elasticsearch search error: {e}")
+            logger.error(f"❌ Failed query body: {json.dumps(search_body, indent=2, ensure_ascii=False)}")
             return {'hits': {'hits': []}}
     
     def get_context_for_llm(self, search_results: List[Dict[str, Any]]) -> str:
@@ -569,7 +590,7 @@ class VectorStore:
                         "voucher_id": {"type": "keyword"},
                         "voucher_name": {"type": "text", "analyzer": "standard"},
                         "content": {"type": "text", "analyzer": "standard"},
-                        "embedding": {
+                        "content_embedding": {
                             "type": "dense_vector",
                             "dims": self.embedding_dimension
                         },

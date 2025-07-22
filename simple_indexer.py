@@ -19,7 +19,7 @@ class SimpleElasticsearchIndexer:
     def __init__(self):
         self.es_url = os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")
         self.index_name = os.getenv("ELASTICSEARCH_INDEX", "voucher_knowledge")
-        self.model_name = os.getenv("EMBEDDING_MODEL", "keepitreal/vietnamese-sbert")
+        self.model_name = os.getenv("EMBEDDING_MODEL", "dangvantuan/vietnamese-embedding")
 
         # Initialize components
         self.es = Elasticsearch([self.es_url], verify_certs=False, request_timeout=30)

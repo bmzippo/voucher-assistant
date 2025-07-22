@@ -71,7 +71,7 @@ async def startup_event():
         # Initialize advanced vector store
         advanced_vector_store = AdvancedVectorStore(
             es_url="http://localhost:9200",
-            embedding_model= os.getenv("EMBEDDING_MODEL","keepitreal/vietnamese-sbert"),
+            embedding_model= os.getenv("EMBEDDING_MODEL","dangvantuan/vietnamese-embedding"),
             index_name=os.getenv("ELASTICSEARCH_INDEX","vouchers_advanced")
         )
         

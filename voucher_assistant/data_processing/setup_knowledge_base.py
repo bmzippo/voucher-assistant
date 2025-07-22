@@ -80,7 +80,7 @@ class VoucherKnowledgeBaseSetup:
     def __init__(self):
         self.es_host = os.getenv('ELASTICSEARCH_HOST', 'localhost:9200')
         self.es_index = os.getenv('ELASTICSEARCH_INDEX', 'voucher_knowledge')
-        self.model_name = os.getenv('EMBEDDING_MODEL', 'keepitreal/vietnamese-sbert')
+        self.model_name = os.getenv('EMBEDDING_MODEL', 'dangvantuan/vietnamese-embedding')
         self.embedding_dimension = int(os.getenv('EMBEDDING_DIMENSION', '768'))  # Default to 768 for Vietnamese model
         
         # Initialize components
