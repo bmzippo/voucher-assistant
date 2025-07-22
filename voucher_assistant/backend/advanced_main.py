@@ -72,7 +72,7 @@ async def startup_event():
         advanced_vector_store = AdvancedVectorStore(
             es_url="http://localhost:9200",
             embedding_model= os.getenv("EMBEDDING_MODEL","dangvantuan/vietnamese-embedding"),
-            index_name=os.getenv("ELASTICSEARCH_INDEX","vouchers_advanced")
+            index_name=os.getenv("ELASTICSEARCH_INDEX","voucher_knowledge")
         )
         
         # Initialize query parser
@@ -281,7 +281,7 @@ async def index_voucher_advanced(request: VoucherIndexRequest):
         logger.error(f"❌ Indexing error: {e}")
         raise HTTPException(status_code=500, detail=f"Indexing error: {str(e)}")
 
-@app.post("/api/analyze-query")
+@app.get("/api/analyze-query")
 async def analyze_query(query: str):
     """
     Analyze query and return detailed parsing results

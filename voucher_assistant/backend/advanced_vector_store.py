@@ -579,7 +579,7 @@ class AdvancedVectorStore:
         # Add filters
         if location_filter:
             search_body["query"]["bool"]["filter"].append({
-                "term": {"location.name": location_filter}
+                "term": {"location.name.keyword": location_filter}
             })
         
         if service_filter:
