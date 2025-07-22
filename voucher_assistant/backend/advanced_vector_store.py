@@ -1,5 +1,5 @@
 """
-Advanced Vector Store với Multi-field Embedding Strategy
+Advanced Vector Store với Multi-field Embedding Strategy + RAG Integration
 Phần của   AI Voucher Assistant - Phase 2
 """
 
@@ -13,8 +13,21 @@ import re
 import os
 from dataclasses import dataclass
 from voucher_content_generator import VoucherContentGenerator
+# import openai  # Will be enabled when integrated with actual LLM service
+import asyncio
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
+
+@dataclass
+class RAGResponse:
+    """Response từ RAG pipeline"""
+    answer: str
+    retrieved_vouchers: List[Dict[str, Any]]
+    confidence_score: float
+    search_method: str
+    processing_time: float
+    query_intent: Dict[str, Any]
 
 @dataclass
 class EmbeddingWeights:
@@ -52,9 +65,16 @@ class AdvancedVectorStore:
         self.content_generator = VoucherContentGenerator()
         self.weights = EmbeddingWeights()
         
+        # LLM Configuration
+        self.llm_model = os.getenv('LLM_MODEL', 'gpt-4o-mini')  # Fallback to OpenAI
+        self.llm_api_key = os.getenv('OPENAI_API_KEY')
+        self.max_context_tokens = int(os.getenv('MAX_CONTEXT_TOKENS', '4000'))
+        self.temperature = float(os.getenv('LLM_TEMPERATURE', '0.3'))
+        
         # Initialize embedding model
         self.model = SentenceTransformer(embedding_model)        
         logger.info(f"🤖 Advanced Vector Store initialized with model: {embedding_model}")
+        logger.info(f"🧠 LLM configured: {self.llm_model}")
         
         # Create advanced index mapping
         self._create_advanced_index()
@@ -670,3 +690,368 @@ class AdvancedVectorStore:
             results.append(result)
         
         return results
+    
+    # ================== RAG INTEGRATION METHODS ==================
+    
+    async def rag_search_with_llm(self, query: str, top_k: int = 5,
+                                 location_filter: Optional[str] = None,
+                                 service_filter: Optional[str] = None,
+                                 price_filter: Optional[str] = None) -> RAGResponse:
+        """
+        Complete RAG pipeline: Retrieve + Generate
+        """
+        start_time = datetime.now()
+        
+        try:
+            # 1. Retrieve relevant vouchers using advanced search
+            logger.info(f"🔍 RAG Pipeline started for query: '{query}'")
+            retrieved_vouchers = await self.advanced_vector_search(
+                query, top_k=top_k,
+                location_filter=location_filter,
+                service_filter=service_filter, 
+                price_filter=price_filter
+            )
+            
+            # 2. Extract query components for context
+            query_components = self._analyze_query(query)
+            
+            # 3. Prepare context for LLM
+            context = self._prepare_llm_context(retrieved_vouchers, query_components)
+            
+            # 4. Generate answer using LLM
+            if not retrieved_vouchers:
+                answer = self._generate_no_results_response(query)
+                confidence_score = 0.0
+            else:
+                answer = await self._call_llm_with_context(query, context, query_components)
+                confidence_score = self._calculate_confidence_score(retrieved_vouchers)
+            
+            # 5. Calculate processing time
+            processing_time = (datetime.now() - start_time).total_seconds()
+            
+            logger.info(f"✅ RAG completed in {processing_time:.2f}s, confidence: {confidence_score:.2f}")
+            
+            return RAGResponse(
+                answer=answer,
+                retrieved_vouchers=retrieved_vouchers,
+                confidence_score=confidence_score,
+                search_method='advanced_rag',
+                processing_time=processing_time,
+                query_intent=query_components
+            )
+            
+        except Exception as e:
+            logger.error(f"❌ RAG pipeline error: {e}")
+            processing_time = (datetime.now() - start_time).total_seconds()
+            
+            return RAGResponse(
+                answer="Xin lỗi, tôi gặp lỗi khi xử lý câu hỏi của bạn. Vui lòng thử lại.",
+                retrieved_vouchers=[],
+                confidence_score=0.0,
+                search_method='error',
+                processing_time=processing_time,
+                query_intent={}
+            )
+    
+    def _prepare_llm_context(self, retrieved_vouchers: List[Dict[str, Any]], 
+                           query_components: Dict[str, Any]) -> str:
+        """
+        Chuẩn bị context từ retrieved vouchers cho LLM
+        """
+        if not retrieved_vouchers:
+            return "Không tìm thấy voucher phù hợp."
+        
+        context_parts = []
+        context_parts.append("=== THÔNG TIN VOUCHER LIÊN QUAN ===\n")
+        
+        for i, voucher in enumerate(retrieved_vouchers, 1):
+            context_parts.append(f"VOUCHER {i}:")
+            context_parts.append(f"Tên: {voucher.get('voucher_name', 'N/A')}")
+            context_parts.append(f"Nội dung: {voucher.get('content', 'N/A')}")
+            
+            # Add structured metadata
+            location = voucher.get('location', {})
+            if location.get('name') != 'Unknown':
+                context_parts.append(f"Địa điểm: {location.get('name')} ({location.get('region', '')})")
+            
+            service_info = voucher.get('service_info', {})
+            if service_info.get('category'):
+                context_parts.append(f"Loại dịch vụ: {service_info.get('category')}")
+            
+            price_info = voucher.get('price_info', {})
+            if price_info.get('price_range'):
+                context_parts.append(f"Phân khúc giá: {price_info.get('price_range')}")
+            
+            target_audience = voucher.get('target_audience')
+            if target_audience and target_audience != 'General':
+                context_parts.append(f"Phù hợp cho: {target_audience}")
+            
+            similarity_score = voucher.get('similarity_score', 0)
+            context_parts.append(f"Độ phù hợp: {similarity_score:.2f}")
+            context_parts.append("---")
+        
+        # Limit context length
+        full_context = "\n".join(context_parts)
+        if len(full_context) > self.max_context_tokens * 3:  # Rough token estimation
+            # Truncate to most relevant vouchers
+            truncated_vouchers = retrieved_vouchers[:3]
+            return self._prepare_llm_context(truncated_vouchers, query_components)
+        
+        return full_context
+    
+    async def _call_llm_with_context(self, query: str, context: str, 
+                                   query_components: Dict[str, Any]) -> str:
+        """
+        Gọi LLM với context để generate answer
+        """
+        try:
+            # Determine response style based on query intent
+            response_style = self._get_response_style(query_components)
+            
+            system_prompt = f"""Bạn là AI Assistant chuyên về voucher   - hệ sinh thái FnB hàng đầu Việt Nam.
+
+NHIỆM VỤ:
+- Trả lời câu hỏi của người dùng dựa trên thông tin voucher được cung cấp
+- Đưa ra lời khuyên phù hợp và chi tiết
+- Giải thích các điều khoản & điều kiện một cách dễ hiểu
+- Gợi ý voucher phù hợp nhất
+
+PHONG CÁCH TRẢ LỜI: {response_style}
+
+QUY TẮC:
+1. CHỈ sử dụng thông tin từ voucher được cung cấp
+2. KHÔNG tự tạo ra thông tin không có trong dữ liệu
+3. Nếu không có voucher phù hợp, giải thích lý do và gợi ý tìm kiếm khác
+4. Luôn kết thúc với câu hỏi để tương tác thêm
+5. Sử dụng emoji phù hợp để làm cho câu trả lời sinh động
+
+THÔNG TIN VOUCHER:
+{context}"""
+
+            user_prompt = f"Câu hỏi của khách hàng: {query}"
+            
+            # Call LLM (using simple HTTP request to avoid openai dependency for now)
+            response = await self._make_llm_request(system_prompt, user_prompt)
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"❌ LLM call failed: {e}")
+            return self._generate_fallback_response(query, context)
+    
+    def _get_response_style(self, query_components: Dict[str, Any]) -> str:
+        """Determine appropriate response style based on query intent"""
+        if query_components.get('location_intent') == 'high':
+            return "Tập trung vào thông tin địa điểm, khu vực và hướng dẫn đường đi"
+        elif query_components.get('service_intent') == 'high':
+            return "Chi tiết về dịch vụ, tiện ích và trải nghiệm"
+        elif query_components.get('target_intent') == 'high':
+            return "Tư vấn phù hợp với đối tượng và nhu cầu cụ thể"
+        else:
+            return "Tổng quan và gợi ý toàn diện"
+    
+    async def _make_llm_request(self, system_prompt: str, user_prompt: str) -> str:
+        """
+        Make LLM request (simplified version without openai dependency)
+        In production, integrate with Vertex AI or OpenAI
+        """
+        # For now, return a structured response based on context
+        return self._generate_structured_response(user_prompt, system_prompt)
+    
+    def _generate_structured_response(self, query: str, context: str) -> str:
+        """
+        Generate structured response when LLM is not available
+        """
+        # Extract voucher count from context
+        voucher_count = context.count("VOUCHER ")
+        
+        if voucher_count == 0:
+            return f"""🔍 Tôi đã tìm kiếm cho "{query}" nhưng không tìm thấy voucher phù hợp.
+
+💡 **Gợi ý:**
+- Thử tìm kiếm với từ khóa khác
+- Kiểm tra lại địa điểm hoặc loại dịch vụ
+- Liên hệ hotline   để được hỗ trợ thêm
+
+❓ Bạn có muốn tôi tìm kiếm voucher theo tiêu chí khác không?"""
+        
+        response_parts = [
+            f"🎯 Tôi tìm thấy **{voucher_count} voucher** phù hợp với yêu cầu \"{query}\" của bạn:\n"
+        ]
+        
+        # Extract voucher names from context
+        voucher_lines = [line for line in context.split('\n') if line.startswith('Tên:')]
+        for i, line in enumerate(voucher_lines[:3], 1):
+            voucher_name = line.replace('Tên: ', '')
+            response_parts.append(f"**{i}.** {voucher_name}")
+        
+        response_parts.extend([
+            "",
+            "💡 **Lời khuyên:**",
+            "- Kiểm tra điều khoản sử dụng trước khi đặt",
+            "- Đặt bàn trước để đảm bảo có chỗ",
+            "- Mang theo voucher khi đến sử dụng",
+            "",
+            "❓ Bạn có muốn tôi giải thích chi tiết về voucher nào không?"
+        ])
+        
+        return "\n".join(response_parts)
+    
+    def _generate_fallback_response(self, query: str, context: str) -> str:
+        """Generate fallback response when LLM fails"""
+        return f"""⚡ Dựa trên tìm kiếm cho "{query}", tôi tìm thấy một số voucher có thể phù hợp:
+
+{context[:500]}...
+
+💼 Để được tư vấn chi tiết hơn, vui lòng liên hệ hotline   hoặc thử tìm kiếm với từ khóa cụ thể hơn.
+
+❓ Bạn có câu hỏi gì khác về voucher không?"""
+    
+    def _generate_no_results_response(self, query: str) -> str:
+        """Generate response when no vouchers found"""
+        return f"""🔍 Không tìm thấy voucher phù hợp với "{query}".
+
+💡 **Thử các cách sau:**
+- Tìm kiếm với từ khóa đơn giản hơn (VD: "buffet", "massage", "spa")
+- Chỉ định địa điểm cụ thể (VD: "Hà Nội", "TP.HCM")
+- Tìm theo loại dịch vụ (VD: "nhà hàng", "khách sạn")
+
+🌟 **Gợi ý phổ biến:**
+- "buffet Hải Phòng" 
+- "spa cho gia đình"
+- "nhà hàng cao cấp"
+
+❓ Bạn có muốn thử tìm kiếm với từ khóa khác không?"""
+    
+    def _calculate_confidence_score(self, retrieved_vouchers: List[Dict[str, Any]]) -> float:
+        """Calculate confidence score based on retrieval results"""
+        if not retrieved_vouchers:
+            return 0.0
+        
+        # Calculate based on similarity scores and result count
+        avg_similarity = sum(v.get('similarity_score', 0) for v in retrieved_vouchers) / len(retrieved_vouchers)
+        
+        # Normalize to 0-1 range
+        confidence = min(avg_similarity / 50.0, 1.0)  # Assuming max similarity ~50
+        
+        # Boost confidence if we have multiple good results
+        if len(retrieved_vouchers) >= 3 and avg_similarity > 30:
+            confidence = min(confidence * 1.2, 1.0)
+        
+        return round(confidence, 3)
+    
+    # ================== UNIFIED SEARCH INTERFACE ==================
+    
+    async def search(self, query: str, 
+                    search_type: str = "rag",  # "rag", "vector", "hybrid"
+                    top_k: int = 5,
+                    location_filter: Optional[str] = None,
+                    service_filter: Optional[str] = None,
+                    price_filter: Optional[str] = None,
+                    return_raw_results: bool = False) -> Dict[str, Any]:
+        """
+        Unified search interface supporting multiple search types
+        
+        Args:
+            query: Search query in Vietnamese
+            search_type: "rag" (full RAG pipeline), "vector" (vector search only), "hybrid"
+            top_k: Number of results to return
+            location_filter: Filter by specific location
+            service_filter: Filter by service category  
+            price_filter: Filter by price range
+            return_raw_results: If True, return raw search results instead of RAG response
+            
+        Returns:
+            RAGResponse for "rag" search_type, or raw results for others
+        """
+        if search_type == "rag":
+            # Use full RAG pipeline (Retrieval + Generation)
+            return await self.rag_search_with_llm(
+                query=query,
+                top_k=top_k,
+                location_filter=location_filter,
+                service_filter=service_filter,
+                price_filter=price_filter
+            )
+        
+        elif search_type == "vector":
+            # Use advanced vector search only
+            results = await self.advanced_vector_search(
+                query=query,
+                top_k=top_k,
+                location_filter=location_filter,
+                service_filter=service_filter,
+                price_filter=price_filter
+            )
+            
+            if return_raw_results:
+                return {"results": results, "search_type": "vector"}
+            else:
+                # Wrap in RAGResponse format for consistency
+                return RAGResponse(
+                    answer=f"Tìm thấy {len(results)} voucher phù hợp. Đây là kết quả vector search thuần túy.",
+                    retrieved_vouchers=results,
+                    confidence_score=self._calculate_confidence_score(results),
+                    search_method='vector_only',
+                    processing_time=0.0,
+                    query_intent=self._analyze_query(query)
+                )
+        
+        elif search_type == "hybrid":
+            # Hybrid approach: Vector search + minimal context enhancement
+            results = await self.advanced_vector_search(
+                query=query,
+                top_k=top_k,
+                location_filter=location_filter,
+                service_filter=service_filter,
+                price_filter=price_filter
+            )
+            
+            # Generate minimal response without full LLM call
+            if results:
+                answer = self._generate_hybrid_response(query, results)
+            else:
+                answer = self._generate_no_results_response(query)
+            
+            return RAGResponse(
+                answer=answer,
+                retrieved_vouchers=results,
+                confidence_score=self._calculate_confidence_score(results),
+                search_method='hybrid',
+                processing_time=0.0,
+                query_intent=self._analyze_query(query)
+            )
+        
+        else:
+            raise ValueError(f"Unsupported search_type: {search_type}. Use 'rag', 'vector', or 'hybrid'")
+    
+    def _generate_hybrid_response(self, query: str, results: List[Dict[str, Any]]) -> str:
+        """Generate a hybrid response with voucher list and basic guidance"""
+        if not results:
+            return self._generate_no_results_response(query)
+        
+        response_parts = [
+            f"🎯 **Kết quả tìm kiếm cho**: \"{query}\"",
+            f"📊 **Tìm thấy**: {len(results)} voucher phù hợp\n"
+        ]
+        
+        # List top vouchers with key details
+        for i, voucher in enumerate(results[:3], 1):
+            name = voucher.get('voucher_name', 'N/A')
+            location = voucher.get('location', {}).get('name', 'N/A')
+            similarity = voucher.get('similarity_score', 0)
+            
+            response_parts.append(f"**{i}. {name}**")
+            if location != 'N/A':
+                response_parts.append(f"   📍 {location}")
+            response_parts.append(f"   ⭐ Độ phù hợp: {similarity:.1f}%\n")
+        
+        if len(results) > 3:
+            response_parts.append(f"... và {len(results) - 3} voucher khác")
+        
+        response_parts.extend([
+            "\n💡 **Để được tư vấn chi tiết hơn, hãy sử dụng chế độ RAG search!**",
+            "❓ Bạn có muốn biết thêm thông tin về voucher nào không?"
+        ])
+        
+        return "\n".join(response_parts)
