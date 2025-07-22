@@ -308,6 +308,9 @@ class VectorStore:
                 "_source": ["voucher_id", "voucher_name", "content", "metadata", "created_at"]
             }
             
+            # Log ES query for debugging
+            logger.info(f"🔍 Vector Search ES Query: {search_body}")
+            
             # 3. Thực hiện search
             response = await self._execute_search(search_body)
             
@@ -397,6 +400,9 @@ class VectorStore:
                 "size": top_k,
                 "_source": ["voucher_id", "voucher_name", "content", "metadata"]
             }
+            
+            # Log ES query for debugging
+            logger.info(f"🔍 Hybrid Search Text ES Query: {text_search_body}")
             
             # Vector search results with location boosting
             vector_results = await self.vector_search(query, top_k, min_score, location_boost)

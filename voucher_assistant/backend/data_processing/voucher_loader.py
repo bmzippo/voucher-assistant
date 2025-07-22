@@ -7,6 +7,13 @@ import pandas as pd
 import logging
 from typing import List, Dict, Any, Optional
 from pathlib import Path
+import sys
+import os
+
+# Add parent directory to path for importing voucher_content_generator
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from voucher_content_generator import VoucherContentGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +25,7 @@ class VoucherDataLoader:
     def __init__(self):
         self.loaded_files = []
         self.total_vouchers = 0
+        self.content_generator = VoucherContentGenerator()
         
     def load_temp_voucher_file(self, file_path: str) -> List[Dict[str, Any]]:
         """
@@ -43,9 +51,11 @@ class VoucherDataLoader:
                     'tags': str(row.get('Tags', '')).strip(),
                     'merchant': str(row.get('Merrchant', '')).strip(),
                     'unit': str(row.get('Unit', '')).strip(),
-                    'source_file': 'temp_voucher.xlsx',
-                    'content': str(row.get('Desc', '')).strip() + ". " + str(row.get('TermOfUse', '')).strip() + ". " + str(row.get('Usage', '')).strip()
+                    'source_file': 'temp_voucher.xlsx'
                 }
+                
+                # Generate content using VoucherContentGenerator
+                voucher_data = self.content_generator.update_voucher_with_generated_content(voucher_data)
                 
                 # Skip empty vouchers
                 if voucher_data['voucher_name'] and voucher_data['voucher_name'] != 'nan':
@@ -62,17 +72,21 @@ class VoucherDataLoader:
     def load_import_voucher_file(self, file_path: str, has_header: bool = True) -> List[Dict[str, Any]]:
         """
         Load importvoucher.xlsx or importvoucher2.xlsx files
-        Expected columns: ['Name', 'Description', 'Terms', 'Location', 'Price', 'Category', 'Merchant']
+        
+        importvoucher.xlsx columns: ['Name', 'Desc', 'Usage', 'TermOfUse', 'Tags', 'Location', 'Price', 'Unit', 'Merrchant']
+        importvoucher2.xlsx columns: ['Name', 'Description', 'Terms', 'Location', 'Price', 'Category', 'Merchant']
         """
         logger.info(f"📊 Loading import voucher file: {file_path} (has_header: {has_header})")
         
         try:
+            file_name = Path(file_path).name
+            
             if has_header:
                 df = pd.read_excel(file_path)
             else:
-                # Load without header and assign column names from importvoucher.xlsx format
+                # Load without header and assign column names from importvoucher2.xlsx format
                 df = pd.read_excel(file_path, header=None)
-                # Assume same structure as importvoucher.xlsx
+                # Assume same structure as importvoucher2.xlsx
                 expected_columns = ['Name', 'Description', 'Terms', 'Location', 'Price', 'Category', 'Merchant']
                 if len(df.columns) >= len(expected_columns):
                     df.columns = expected_columns + [f'Extra_{i}' for i in range(len(df.columns) - len(expected_columns))]
@@ -86,24 +100,44 @@ class VoucherDataLoader:
             logger.info(f"📋 Columns detected: {df.columns.tolist()}")
             
             vouchers = []
-            file_name = Path(file_path).name
             
             for idx, row in df.iterrows():
-                voucher_data = {
-                    'voucher_id': f"import_{file_name.replace('.xlsx', '')}_{idx + 1}",
-                    'voucher_name': str(row.get('Name', '')).strip(),
-                    'location': str(row.get('Location', 'Hà Nội')).strip(),
-                    'description': str(row.get('Description', '')).strip(),                    
-                    'terms_conditions': str(row.get('Terms', '')).strip(),
-                    'usage': '',  # Not available in import files
-                    'price': str(row.get('Price', '')).strip(),
-                    'tags': '',  # Not available in import files
-                    'merchant': str(row.get('Merchant', '')).strip(),
-                    'category': str(row.get('Category', '')).strip(),
-                    'unit': '',  # Not available in import files
-                    'source_file': file_name,
-                    'content': str(row.get('Description', '')).strip() + ". " + str(row.get('Terms', '')).strip() + ". " + str(row.get('Usage', '')).strip()
-                }
+                # Handle different column names for different files
+                if 'importvoucher.xlsx' == file_name:
+                    # importvoucher.xlsx format
+                    voucher_data = {
+                        'voucher_id': f"import_{file_name.replace('.xlsx', '')}_{idx + 1}",
+                        'voucher_name': str(row.get('Name', '')).strip(),
+                        'location': str(row.get('Location', 'Hà Nội')).strip(),
+                        'description': str(row.get('Desc', '')).strip(),  # Desc not Description                   
+                        'terms_conditions': str(row.get('TermOfUse', '')).strip(),  # TermOfUse not Terms
+                        'usage': str(row.get('Usage', '')).strip(),
+                        'price': str(row.get('Price', '')).strip(),
+                        'tags': str(row.get('Tags', '')).strip(),
+                        'merchant': str(row.get('Merrchant', '')).strip(),  # Merrchant not Merchant
+                        'category': '',  # Not available in importvoucher.xlsx
+                        'unit': str(row.get('Unit', '')).strip(),
+                        'source_file': file_name
+                    }
+                else:
+                    # importvoucher2.xlsx format (and others)
+                    voucher_data = {
+                        'voucher_id': f"import_{file_name.replace('.xlsx', '')}_{idx + 1}",
+                        'voucher_name': str(row.get('Name', '')).strip(),
+                        'location': str(row.get('Location', 'Hà Nội')).strip(),
+                        'description': str(row.get('Description', '')).strip(),                    
+                        'terms_conditions': str(row.get('Terms', '')).strip(),
+                        'usage': '',  # Not available in importvoucher2.xlsx
+                        'price': str(row.get('Price', '')).strip(),
+                        'tags': '',  # Not available in importvoucher2.xlsx
+                        'merchant': str(row.get('Merchant', '')).strip(),
+                        'category': str(row.get('Category', '')).strip(),
+                        'unit': '',  # Not available in importvoucher2.xlsx
+                        'source_file': file_name
+                    }
+
+                # Generate content using VoucherContentGenerator
+                voucher_data = self.content_generator.update_voucher_with_generated_content(voucher_data)
 
                 
                 # Skip empty vouchers

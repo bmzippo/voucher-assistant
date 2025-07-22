@@ -12,6 +12,7 @@ import json
 import re
 import os
 from dataclasses import dataclass
+from voucher_content_generator import VoucherContentGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,7 @@ class AdvancedVectorStore:
         self.index_name = index_name
         self.embedding_model_name = embedding_model
         self.embedding_dimension = 768
+        self.content_generator = VoucherContentGenerator()
         self.weights = EmbeddingWeights()
         
         # Initialize embedding model
@@ -174,6 +176,10 @@ class AdvancedVectorStore:
         Extract và classify các components từ voucher data
         Sử dụng rule-based + pattern matching cho tiếng Việt
         """
+        # Generate content using VoucherContentGenerator if not present or needs update
+        if 'content' not in voucher_data or not voucher_data['content'].strip():
+            voucher_data = self.content_generator.update_voucher_with_generated_content(voucher_data)
+        
         content = voucher_data.get('content', '')
         voucher_name = voucher_data.get('voucher_name', '')
         
@@ -503,30 +509,24 @@ class AdvancedVectorStore:
     def _create_adaptive_query_embedding(self, query: str, components: Dict[str, Any]) -> np.ndarray:
         """
         Tạo query embedding thích ứng dựa trên intent
+        Trả về base embedding để dùng chung cho tất cả fields
         """
-        # Adjust weights based on detected intent
-        adaptive_weights = EmbeddingWeights()
+        # Create enhanced query text based on detected intent
+        enhanced_query = query
         
         if components['location_intent'] == 'high':
-            adaptive_weights.location = 0.5
-            adaptive_weights.content = 0.3
-            adaptive_weights.service_type = 0.1
-            adaptive_weights.target_audience = 0.1
+            # Enhance with location context
+            enhanced_query = f"Địa điểm địa lý khu vực: {query}"
         elif components['service_intent'] == 'high':
-            adaptive_weights.service_type = 0.4
-            adaptive_weights.content = 0.3
-            adaptive_weights.location = 0.2
-            adaptive_weights.target_audience = 0.1
+            # Enhance with service context
+            enhanced_query = f"Dịch vụ loại hình: {query}"
         elif components['target_intent'] == 'high':
-            adaptive_weights.target_audience = 0.4
-            adaptive_weights.content = 0.3
-            adaptive_weights.service_type = 0.2
-            adaptive_weights.location = 0.1
+            # Enhance with target context
+            enhanced_query = f"Đối tượng phù hợp: {query}"
         
-        # Create weighted query embedding
-        base_embedding = self.model.encode(query)
+        # Create base embedding for the enhanced query
+        base_embedding = self.model.encode(enhanced_query)
         
-        # For now, return base embedding (can be enhanced with multiple embeddings)
         return base_embedding
     
     def _build_advanced_search_query(self, query_embedding: np.ndarray, 
@@ -535,16 +535,12 @@ class AdvancedVectorStore:
                                    location_filter: Optional[str] = None,
                                    service_filter: Optional[str] = None,
                                    price_filter: Optional[str] = None) -> Dict[str, Any]:
-        """Build sophisticated Elasticsearch query with HYBRID SEARCH"""
+        """Build sophisticated Elasticsearch query with MULTI-FIELD VECTOR SEARCH"""
         
-        # Choose embedding field based on primary focus
-        embedding_field = 'combined_embedding'
-        if query_components['primary_focus'] == 'location':
-            embedding_field = 'location_embedding'
-        elif query_components['primary_focus'] == 'service':
-            embedding_field = 'service_embedding'
+        # 🎯 Dynamic weights based on query intent
+        weights = self._calculate_dynamic_weights(query_components)
         
-        # 🚀 HYBRID SEARCH: Combine semantic + exact text search
+        # 🚀 MULTI-FIELD VECTOR SEARCH: Search all embedding fields simultaneously
         search_body = {
             "query": {
                 "bool": {
@@ -555,17 +551,33 @@ class AdvancedVectorStore:
                                 "query": query_components.get('original_query', ''),
                                 "fields": ["voucher_name^3", "content^1"],
                                 "type": "best_fields",
-                                "boost": 3.0  # High boost for exact matches
+                                "boost": 2.0  # Text search boost
                             }
                         },
-                        # 🤖 Semantic search 
+                        # 🤖 Multi-field semantic search with adaptive weights
                         {
                             "script_score": {
                                 "query": {"match_all": {}},
                                 "script": {
-                                    "source": f"cosineSimilarity(params.query_vector, '{embedding_field}') + 1.0",
-                                    "params": {"query_vector": query_embedding.tolist()}
-                                }
+                                    "source": """
+                                        double contentScore = cosineSimilarity(params.query_vector, 'content_embedding') * params.content_weight;
+                                        double locationScore = cosineSimilarity(params.query_vector, 'location_embedding') * params.location_weight;
+                                        double serviceScore = cosineSimilarity(params.query_vector, 'service_embedding') * params.service_weight;
+                                        double targetScore = cosineSimilarity(params.query_vector, 'target_embedding') * params.target_weight;
+                                        double combinedScore = cosineSimilarity(params.query_vector, 'combined_embedding') * params.combined_weight;
+                                        
+                                        return (contentScore + locationScore + serviceScore + targetScore + combinedScore) + 1.0;
+                                    """,
+                                    "params": {
+                                        "query_vector": query_embedding.tolist(),
+                                        "content_weight": weights['content'],
+                                        "location_weight": weights['location'],
+                                        "service_weight": weights['service'],
+                                        "target_weight": weights['target'],
+                                        "combined_weight": weights['combined']
+                                    }
+                                },
+                                "boost": 3.0  # High boost for semantic similarity
                             }
                         }
                     ],
@@ -579,7 +591,7 @@ class AdvancedVectorStore:
         # Add filters
         if location_filter:
             search_body["query"]["bool"]["filter"].append({
-                "term": {"location.name.keyword": location_filter}
+                "term": {"location.name": location_filter}
             })
         
         if service_filter:
@@ -593,6 +605,41 @@ class AdvancedVectorStore:
             })
         
         return search_body
+    
+    def _calculate_dynamic_weights(self, query_components: Dict[str, Any]) -> Dict[str, float]:
+        """Calculate adaptive weights based on query intent"""
+        # Base weights
+        weights = {
+            'content': 0.3,
+            'location': 0.2,
+            'service': 0.2,
+            'target': 0.1,
+            'combined': 0.2  # Always maintain some combined score
+        }
+        
+        # Adjust weights based on detected intent
+        if query_components.get('location_intent') == 'high':
+            weights['location'] = 0.4
+            weights['content'] = 0.2
+            weights['combined'] = 0.3
+            weights['service'] = 0.05
+            weights['target'] = 0.05
+            
+        elif query_components.get('service_intent') == 'high':
+            weights['service'] = 0.4
+            weights['content'] = 0.2
+            weights['combined'] = 0.3
+            weights['location'] = 0.05
+            weights['target'] = 0.05
+            
+        elif query_components.get('target_intent') == 'high':
+            weights['target'] = 0.4
+            weights['content'] = 0.2
+            weights['combined'] = 0.3
+            weights['location'] = 0.05
+            weights['service'] = 0.05
+        
+        return weights
     
     def _process_advanced_results(self, response: Dict[str, Any], 
                                 query_components: Dict[str, Any]) -> List[Dict[str, Any]]:
