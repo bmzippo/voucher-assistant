@@ -1,4 +1,4 @@
-# OneU AI Voucher Assistant Backend Dependencies
+#   AI Voucher Assistant Backend Dependencies
 # Optimized for Vietnamese language processing and RAG implementation
 
 # Core FastAPI Framework
@@ -20,7 +20,7 @@ huggingface_hub>=0.16.4,<0.18.0
 # Vietnamese Language Model (as specified in .env)
 # Note: dangvantuan/vietnamese-embedding will be loaded via sentence-transformers
 
-# Elasticsearch for Vector Search (OneU requirement)
+# Elasticsearch for Vector Search (  requirement)
 elasticsearch>=8.9.0,<8.12.0
 
 # Data Processing

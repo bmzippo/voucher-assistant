@@ -1,6 +1,6 @@
 # 🏗️ Architecture Overview
 
-> **OneU AI Voucher Assistant - System Architecture Documentation**
+> **  AI Voucher Assistant - System Architecture Documentation**
 
 ## 📋 Table of Contents
 - [High-Level Architecture](#high-level-architecture)
@@ -88,7 +88,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
-    title="OneU AI Voucher Assistant",
+    title="  AI Voucher Assistant",
     description="Advanced voucher search and recommendation system",
     version="1.0.0"
 )

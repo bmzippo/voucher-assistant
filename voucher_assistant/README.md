@@ -1,12 +1,12 @@
-# AI Voucher Assistant for OneU - Phase 1: Responsive AI
+# AI Voucher Assistant for   - Phase 1: Responsive AI
 
-Dự án xây dựng AI Trợ Lý Voucher thông minh cho ứng dụng OneU, giúp người dùng dễ dàng hiểu và áp dụng các điều khoản & điều kiện phức tạp của voucher.
+Dự án xây dựng AI Trợ Lý Voucher thông minh cho ứng dụng  , giúp người dùng dễ dàng hiểu và áp dụng các điều khoản & điều kiện phức tạp của voucher.
 
 ## 🎯 Mục tiêu
 
 - **Tóm tắt điểm chính**: AI tự động đọc và tóm tắt các điều kiện quan trọng nhất của voucher
 - **Hỏi-đáp tự nhiên**: Giao diện chat cho phép người dùng đặt câu hỏi bằng ngôn ngữ tự nhiên về voucher
-- **Xử lý tiếng Việt**: Tối ưu cho ngôn ngữ tiếng Việt và thuật ngữ đặc thù của OneU
+- **Xử lý tiếng Việt**: Tối ưu cho ngôn ngữ tiếng Việt và thuật ngữ đặc thù của  
 
 ## 🏗️ Kiến trúc
 

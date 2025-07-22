@@ -30,7 +30,7 @@ class Settings:
     TOP_K_RESULTS: int = 5
     CONFIDENCE_THRESHOLD: float = 0.7
     
-    # OneU Specific Configuration
+    #   Specific Configuration
     ONEU_KNOWLEDGE_BASE_PATH: str = "data/oneu_knowledge/"
     UPOINT_RULES_PATH: str = "data/upoint_rules.json"
     PAYMENT_METHODS_PATH: str = "data/payment_methods.json"

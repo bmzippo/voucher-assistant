@@ -1,5 +1,5 @@
 """
-Location-Aware Indexing System cho OneU AI Voucher Assistant
+Location-Aware Indexing System cho   AI Voucher Assistant
 Advanced geographic intelligence với coordinate mapping và region analysis
 """
 

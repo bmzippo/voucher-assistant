@@ -1,8 +1,8 @@
-# Project: OneU AI Voucher Assistant - Phase 1: Responsive AI
+# Project:   AI Voucher Assistant - Phase 1: Responsive AI
 
 ## 🎯 Dự án hoàn thành
 
-Tôi đã xây dựng thành công **AI Trợ Lý Voucher cho OneU** theo đúng yêu cầu giai đoạn 1 - Responsive AI. Dự án bao gồm:
+Tôi đã xây dựng thành công **AI Trợ Lý Voucher cho  ** theo đúng yêu cầu giai đoạn 1 - Responsive AI. Dự án bao gồm:
 
 ### 🏗️ Kiến trúc được triển khai:
 
@@ -122,11 +122,11 @@ Có thể test với các câu hỏi mẫu:
 
 ## 🎉 Kết quả
 
-Dự án **OneU AI Voucher Assistant** đã sẵn sàng cho giai đoạn 1, cung cấp trải nghiệm người dùng thông minh với khả năng:
+Dự án **  AI Voucher Assistant** đã sẵn sàng cho giai đoạn 1, cung cấp trải nghiệm người dùng thông minh với khả năng:
 
 1. **Hiểu và tóm tắt** điều khoản voucher phức tạp
 2. **Trả lời câu hỏi** bằng ngôn ngữ tự nhiên tiếng Việt  
-3. **Tích hợp dễ dàng** vào ecosystem OneU
+3. **Tích hợp dễ dàng** vào ecosystem  
 4. **Mở rộng** cho các giai đoạn tiếp theo
 
 Người dùng giờ đây có thể dễ dàng hiểu các điều khoản voucher mà không cần đọc toàn bộ text dài và phức tạp! 🚀

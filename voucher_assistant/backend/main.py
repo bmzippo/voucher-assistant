@@ -50,8 +50,8 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app
 app = FastAPI(
-    title="OneU Voucher Assistant API",
-    description="AI Assistant for OneU Voucher Information",
+    title="  Voucher Assistant API",
+    description="AI Assistant for   Voucher Information",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -96,7 +96,7 @@ def get_llm_service() -> VertexAIService:
 async def root():
     """Health check endpoint"""
     return {
-        "message": "OneU Voucher Assistant API",
+        "message": "  Voucher Assistant API",
         "version": "1.0.0",
         "status": "running",
         "timestamp": datetime.now().isoformat()

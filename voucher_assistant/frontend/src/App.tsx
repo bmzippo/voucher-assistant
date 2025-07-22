@@ -174,7 +174,7 @@ function App() {
       <Header>
         <Title>
           <FiCpu />
-          OneU AI Voucher Assistant
+            AI Voucher Assistant
         </Title>
         <Subtitle>
           Trợ lý AI thông minh giúp bạn hiểu rõ điều khoản voucher

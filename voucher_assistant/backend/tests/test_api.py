@@ -51,7 +51,7 @@ class TestVoucherAPI:
         response = await async_client.get("/")
         assert response.status_code == 200
         data = response.json()
-        assert "OneU Voucher Assistant API" in data["message"]
+        assert "  Voucher Assistant API" in data["message"]
         assert data["status"] == "running"
     
     @pytest.mark.asyncio

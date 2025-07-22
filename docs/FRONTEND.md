@@ -1,6 +1,6 @@
 # 🎨 Frontend Guide
 
-> **OneU AI Voucher Assistant - Frontend Development Guide**
+> **  AI Voucher Assistant - Frontend Development Guide**
 
 ## 📋 Table of Contents
 - [Project Structure](#project-structure)
@@ -641,7 +641,7 @@ export const useDebounce = <T>(value: T, delay: number): T => {
 ```css
 /* src/styles/themes.css */
 :root {
-  /* OneU Brand Colors */
+  /*   Brand Colors */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
   --primary-500: #3b82f6;
@@ -841,9 +841,9 @@ const MobileSearch: React.FC = () => {
 ```json
 // public/manifest.json
 {
-  "name": "OneU Voucher Assistant",
-  "short_name": "OneU Vouchers",
-  "description": "AI-powered voucher search for OneU ecosystem",
+  "name": "  Voucher Assistant",
+  "short_name": "  Vouchers",
+  "description": "AI-powered voucher search for   ecosystem",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

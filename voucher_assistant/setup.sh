@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# OneU Voucher Assistant Setup Script
-echo "=== OneU AI Voucher Assistant Setup ==="
+#   Voucher Assistant Setup Script
+echo "===   AI Voucher Assistant Setup ==="
 
 # Colors for output
 RED='\033[0;31m'
@@ -112,7 +112,7 @@ done
 
 print_status "=== Setup Complete! ==="
 echo ""
-echo "🚀 OneU AI Voucher Assistant is now running!"
+echo "🚀   AI Voucher Assistant is now running!"
 echo ""
 echo "📱 Frontend: http://localhost:3000"
 echo "🔧 Backend API: http://localhost:8000"

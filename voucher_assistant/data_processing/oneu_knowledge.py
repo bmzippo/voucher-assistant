@@ -1,5 +1,5 @@
 """
-OneU Knowledge Base - Vietnamese specific information for voucher assistant
+  Knowledge Base - Vietnamese specific information for voucher assistant
 """
 
 UPOINT_RULES = {
@@ -38,7 +38,7 @@ ONEU_TERMS = {
         "Voucher chỉ sử dụng được 1 lần",
         "Không hoàn lại tiền thừa",
         "Không có giá trị quy đổi thành tiền mặt",
-        "OneU có quyền thay đổi điều khoản mà không báo trước",
+        "  có quyền thay đổi điều khoản mà không báo trước",
         "Voucher có thể được sử dụng cùng các khuyến mãi khác trừ khi có quy định riêng"
     ],
     "user_responsibilities": [
@@ -85,7 +85,7 @@ COMMON_QUESTIONS = {
 RESPONSE_TEMPLATES = {
     "no_information": "Xin lỗi, tôi không tìm thấy thông tin cụ thể về vấn đề này trong điều khoản voucher. Vui lòng liên hệ hotline 1900 558 865 để được hỗ trợ chi tiết.",
     "contact_support": "Để được hỗ trợ tốt nhất, bạn có thể liên hệ:\n- Hotline: 1900 558 865\n- Email: support@oneu.vn\n- Thời gian hỗ trợ: 8:00 - 22:00 hàng ngày",
-    "general_usage": "Để sử dụng voucher:\n1. Mở ứng dụng OneU\n2. Tìm và chọn voucher\n3. Đến cửa hàng/nhà hàng\n4. Xuất trình voucher cho nhân viên\n5. Thanh toán theo hướng dẫn"
+    "general_usage": "Để sử dụng voucher:\n1. Mở ứng dụng  \n2. Tìm và chọn voucher\n3. Đến cửa hàng/nhà hàng\n4. Xuất trình voucher cho nhân viên\n5. Thanh toán theo hướng dẫn"
 }
 
 MERCHANT_INFO = {

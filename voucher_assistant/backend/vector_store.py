@@ -1,5 +1,5 @@
 """
-OneU AI Voucher Assistant - Vector Store Implementation
+  AI Voucher Assistant - Vector Store Implementation
 Tối ưu cho xử lý tiếng Việt và RAG theo yêu cầu giai đoạn 1
 """
 
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 class VectorStore:
     """
-    Vector Store implementation cho OneU AI Voucher Assistant
+    Vector Store implementation cho   AI Voucher Assistant
     Sử dụng Elasticsearch để lưu trữ và tìm kiếm vector embeddings
     Tối ưu cho tiếng Việt theo instruction
     """
@@ -166,7 +166,7 @@ class VectorStore:
     def create_embedding(self, text: str) -> List[float]:
         """
         Tạo embedding vector cho text
-        Tối ưu cho tiếng Việt theo yêu cầu OneU
+        Tối ưu cho tiếng Việt theo yêu cầu  
         """
         if not text or not text.strip():
             return [0.0] * self.embedding_dimension
@@ -205,7 +205,7 @@ class VectorStore:
     def extract_location_from_query(self, query: str) -> Optional[str]:
         """
         Extract location from user query using pattern matching
-        Tích hợp OneU location intelligence
+        Tích hợp   location intelligence
         """
         import re
         
@@ -216,7 +216,7 @@ class VectorStore:
             r'([A-Za-zÀ-ỹ\s]*(?:Hải Phòng|Hà Nội|Hồ Chí Minh|Đà Nẵng|HCM|Sài Gòn)[A-Za-zÀ-ỹ\s]*)',  # Direct mention
         ]
         
-        # Known cities/locations in OneU ecosystem
+        # Known cities/locations in   ecosystem
         known_locations = [
             'Hải Phòng', 'Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng', 'HCM', 'Sài Gòn',
             'Cần Thơ', 'Nha Trang', 'Vũng Tàu', 'Huế', 'Đà Lạt'
@@ -252,7 +252,7 @@ class VectorStore:
     async def vector_search(self, query: str, top_k: Optional[int] = None, min_score: Optional[float] = None, location_boost: bool = True) -> List[Dict[str, Any]]:
         """
         Vector Search API - Tìm kiếm bằng vector similarity với location boosting
-        Tối ưu cho OneU AI Voucher Assistant
+        Tối ưu cho   AI Voucher Assistant
         """
         if not self.is_ready or not self.es:
             logger.error("❌ Vector Store chưa sẵn sàng")
@@ -354,7 +354,7 @@ class VectorStore:
     async def hybrid_search(self, query: str, top_k: Optional[int] = None, min_score: Optional[float] = None, location_boost: bool = True) -> Dict[str, Any]:
         """
         Hybrid Search - Kết hợp text search và vector search với location intelligence
-        Để có kết quả tốt nhất cho OneU
+        Để có kết quả tốt nhất cho  
         """
         try:
             top_k = top_k or self.top_k

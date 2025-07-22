@@ -33,7 +33,7 @@ class RealVertexAIService:
         """Generate summary using real Vertex AI"""
         
         prompt = f"""
-Bạn là AI Assistant chuyên về voucher OneU. Hãy tóm tắt voucher sau theo format yêu cầu:
+Bạn là AI Assistant chuyên về voucher  . Hãy tóm tắt voucher sau theo format yêu cầu:
 
 Tên voucher: {voucher_name}
 
@@ -77,7 +77,7 @@ Lưu ý:
         """Answer question using real Vertex AI"""
         
         prompt = f"""
-Bạn là AI Assistant chuyên về voucher OneU. Khách hàng hỏi về voucher "{voucher_name}".
+Bạn là AI Assistant chuyên về voucher  . Khách hàng hỏi về voucher "{voucher_name}".
 
 Thông tin voucher:
 {context}

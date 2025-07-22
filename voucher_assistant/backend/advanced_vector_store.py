@@ -1,6 +1,6 @@
 """
 Advanced Vector Store với Multi-field Embedding Strategy
-Phần của OneU AI Voucher Assistant - Phase 2
+Phần của   AI Voucher Assistant - Phase 2
 """
 
 import numpy as np
@@ -36,7 +36,7 @@ class VoucherComponents:
 class AdvancedVectorStore:
     """
     Advanced Vector Store với multi-field embedding strategy
-    Tối ưu hóa cho OneU ecosystem
+    Tối ưu hóa cho   ecosystem
     """
     
     def __init__(self, es_url: str = "http://localhost:9200", 

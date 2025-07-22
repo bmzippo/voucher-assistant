@@ -1,5 +1,5 @@
 """
-Smart Query Parser cho OneU AI Voucher Assistant
+Smart Query Parser cho   AI Voucher Assistant
 Phân tích và hiểu ý định người dùng từ natural language queries
 """
 

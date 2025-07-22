@@ -1,6 +1,6 @@
 # ⚙️ Backend Guide
 
-> **OneU AI Voucher Assistant - Backend Development Guide**
+> **  AI Voucher Assistant - Backend Development Guide**
 
 ## 📋 Table of Contents
 - [Project Structure](#project-structure)
@@ -72,7 +72,7 @@ async def lifespan(app: FastAPI):
     """Application lifespan manager"""
     global vector_store, query_parser, location_indexer
     
-    logger.info("🚀 Initializing OneU Advanced AI Voucher Assistant...")
+    logger.info("🚀 Initializing   Advanced AI Voucher Assistant...")
     
     # Initialize components
     vector_store = AdvancedVectorStore()
@@ -87,7 +87,7 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app
 app = FastAPI(
-    title="OneU AI Voucher Assistant",
+    title="  AI Voucher Assistant",
     description="Advanced voucher search and recommendation system",
     version="1.0.0",
     lifespan=lifespan
@@ -170,7 +170,7 @@ class EmbeddingWeights:
 class AdvancedVectorStore:
     """
     Advanced Vector Store with multi-field embedding strategy
-    Optimized for OneU ecosystem
+    Optimized for   ecosystem
     """
     
     def __init__(self, es_url: str = "http://localhost:9200", 
@@ -429,7 +429,7 @@ import math
 class LocationAwareIndexer:
     """
     Advanced geographic indexing and ranking system
-    Optimized for Vietnamese locations and OneU ecosystem
+    Optimized for Vietnamese locations and   ecosystem
     """
     
     def __init__(self):

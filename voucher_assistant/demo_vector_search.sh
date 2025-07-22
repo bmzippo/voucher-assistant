@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# OneU AI Voucher Assistant - Demo Script
+#   AI Voucher Assistant - Demo Script
 # Phát triển Vector Search API theo yêu cầu người dùng
 
-echo "🚀 OneU AI Voucher Assistant - Vector Search Demo"
+echo "🚀   AI Voucher Assistant - Vector Search Demo"
 echo "================================================"
 echo ""
 

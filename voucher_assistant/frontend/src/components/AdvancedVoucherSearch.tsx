@@ -377,7 +377,7 @@ const AdvancedVoucherSearch = () => {
   return (
     <AdvancedSearchContainer>
       <SearchHeader>
-        <SearchTitle>🎯 OneU AI Voucher Assistant</SearchTitle>
+        <SearchTitle>🎯   AI Voucher Assistant</SearchTitle>
         <SearchSubtitle>Advanced Intelligence • Multi-field Embedding • Location Awareness</SearchSubtitle>
       </SearchHeader>
 

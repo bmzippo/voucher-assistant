@@ -1,6 +1,6 @@
 # 📡 API Documentation
 
-> **OneU AI Voucher Assistant - RESTful API Reference**
+> **  AI Voucher Assistant - RESTful API Reference**
 
 ## 📋 Table of Contents
 - [Base URL & Authentication](#base-url--authentication)

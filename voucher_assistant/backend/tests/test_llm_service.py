@@ -18,7 +18,7 @@ class TestLLMService:
         
         Mô tả: Cafe RuNam đã không ngừng nghiên cứu và phát triển cà phê mang đậm thương hiệu Việt.
         
-        Hướng dẫn sử dụng: Khách hàng đổi điểm để lấy voucher trên App OneU sau đó đến cửa hàng 
+        Hướng dẫn sử dụng: Khách hàng đổi điểm để lấy voucher trên App   sau đó đến cửa hàng 
         xuất trình voucher cho thu ngân trước khi thanh toán.
         
         Điều khoản: 

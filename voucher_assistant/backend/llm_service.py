@@ -25,7 +25,7 @@ class VertexAIService:
         """Generate key points summary for voucher"""
         
         prompt = f"""
-Bạn là một AI Assistant chuyên về voucher cho ứng dụng OneU. Hãy tóm tắt các điểm chính của voucher sau đây:
+Bạn là một AI Assistant chuyên về voucher cho ứng dụng  . Hãy tóm tắt các điểm chính của voucher sau đây:
 
 Tên voucher: {voucher_name}
 
@@ -73,7 +73,7 @@ Trả lời bằng tiếng Việt, ngắn gọn và dễ hiểu.
         """Answer user question about voucher"""
         
         prompt = f"""
-Bạn là một AI Assistant chuyên về voucher cho ứng dụng OneU. Một khách hàng đang hỏi về voucher "{voucher_name}".
+Bạn là một AI Assistant chuyên về voucher cho ứng dụng  . Một khách hàng đang hỏi về voucher "{voucher_name}".
 
 Thông tin voucher:
 {context}

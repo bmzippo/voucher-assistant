@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OneU AI Voucher Assistant - Knowledge Base Setup
+  AI Voucher Assistant - Knowledge Base Setup
 Thiết lập knowledge base từ dữ liệu voucher Excel
 """
 
@@ -399,7 +399,7 @@ class VoucherKnowledgeBaseSetup:
     
     def run_setup(self):
         """Chạy toàn bộ setup process"""
-        logger.info("🚀 Bắt đầu setup Knowledge Base cho OneU AI Voucher Assistant")
+        logger.info("🚀 Bắt đầu setup Knowledge Base cho   AI Voucher Assistant")
         
         # 1. Setup Elasticsearch
         if not self.setup_elasticsearch():
@@ -435,7 +435,7 @@ def main():
     setup = VoucherKnowledgeBaseSetup()
     
     if setup.run_setup():
-        print("\n🎉 OneU AI Voucher Assistant Knowledge Base đã sẵn sàng!")
+        print("\n🎉   AI Voucher Assistant Knowledge Base đã sẵn sàng!")
         print(f"📊 Index: {setup.es_index}")
         print(f"🔍 Elasticsearch: http://{setup.es_host}")
         print("\n🚀 Bây giờ bạn có thể chạy backend API!")

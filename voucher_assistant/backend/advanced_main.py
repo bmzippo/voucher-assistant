@@ -1,5 +1,5 @@
 """
-Advanced Main API cho OneU AI Voucher Assistant
+Advanced Main API cho   AI Voucher Assistant
 Tích hợp tất cả các giải pháp dài hạn: Multi-field embedding, Smart query parsing, Location-aware indexing
 """
 
@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="OneU AI Voucher Assistant - Advanced API",
+    title="  AI Voucher Assistant - Advanced API",
     description="Advanced AI-powered voucher search với multi-field embedding, smart query parsing và location intelligence",
     version="2.0.0"
 )
@@ -64,7 +64,7 @@ async def startup_event():
     """Initialize advanced components"""
     global advanced_vector_store, query_parser, location_indexer
     
-    logger.info("🚀 Initializing OneU Advanced AI Voucher Assistant...")
+    logger.info("🚀 Initializing   Advanced AI Voucher Assistant...")
     
     try:
         # Initialize advanced vector store
@@ -89,7 +89,7 @@ async def startup_event():
 @app.get("/")
 async def root():
     return {
-        "message": "OneU AI Voucher Assistant - Advanced API v2.0",
+        "message": "  AI Voucher Assistant - Advanced API v2.0",
         "features": [
             "Multi-field Embedding Strategy",
             "Smart Query Parsing",

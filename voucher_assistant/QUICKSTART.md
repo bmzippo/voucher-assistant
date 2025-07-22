@@ -1,4 +1,4 @@
-# OneU AI Voucher Assistant
+#   AI Voucher Assistant
 
 ## Quick Start
 

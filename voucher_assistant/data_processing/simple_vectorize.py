@@ -105,7 +105,7 @@ def process_excel_file(file_path, api_url="http://localhost:8000"):
 
 def main():
     """Main function"""
-    print("🚀 OneU Voucher Data Vectorization")
+    print("🚀   Voucher Data Vectorization")
     print("=" * 50)
     
     # Check if API is running

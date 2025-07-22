@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Demo script để test OneU AI Voucher Assistant
+Demo script để test   AI Voucher Assistant
 """
 
 import asyncio
@@ -16,7 +16,7 @@ import json
 async def test_voucher_assistant():
     """Test the voucher assistant functionality"""
     
-    print("=== OneU AI Voucher Assistant Demo ===\n")
+    print("===   AI Voucher Assistant Demo ===\n")
     
     # Initialize services
     vector_store = VectorStore()
@@ -31,7 +31,7 @@ async def test_voucher_assistant():
         sample_voucher = VoucherData(
             name="Giảm VND 200,000 - RuNam",
             description="Cafe RuNam đã không ngừng nghiên cứu, tìm hiểu và phát triển cà phê mang đậm thương hiệu Việt. Thực đơn đa dạng, món ăn được trình bày đẹp mắt và hương vị đậm đà sẽ đem đến cho thực khách một trải nghiệm tuyệt vời.",
-            usage_instructions="Khách hàng đổi điểm để lấy voucher trên App OneU sau đó đến cửa hàng xuất trình voucher cho thu ngân trước khi thanh toán để sử dụng ưu đãi.",
+            usage_instructions="Khách hàng đổi điểm để lấy voucher trên App   sau đó đến cửa hàng xuất trình voucher cho thu ngân trước khi thanh toán để sử dụng ưu đãi.",
             terms_of_use="Voucher áp dụng tại tất cả các cửa hàng Runam. Áp dụng tối đa 30 voucher trên 01 hóa đơn. Voucher chỉ có giá trị sử dụng một lần. Không chấp nhận voucher quá hạn sử dụng.",
             tags="cafe, food, runam",
             price=150000,

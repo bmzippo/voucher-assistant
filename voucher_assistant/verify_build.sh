@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build Status Check Script for Voucher Assistant Project
-echo "🚀 OneU AI Voucher Assistant - Build Verification"
+echo "🚀   AI Voucher Assistant - Build Verification"
 echo "=================================================="
 
 # Check if Docker is running

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# OneU Voucher Assistant Production Deployment Script
-echo "=== OneU AI Voucher Assistant Production Deployment ==="
+#   Voucher Assistant Production Deployment Script
+echo "===   AI Voucher Assistant Production Deployment ==="
 
 # Colors for output
 RED='\033[0;31m'
@@ -167,9 +167,9 @@ print_step "8. Setting up monitoring..."
 # Create monitoring scripts
 cat > monitoring.sh << 'EOF'
 #!/bin/bash
-# Monitoring script for OneU Voucher Assistant
+# Monitoring script for   Voucher Assistant
 
-echo "=== OneU Voucher Assistant Status ==="
+echo "===   Voucher Assistant Status ==="
 echo "Timestamp: $(date)"
 echo ""
 
@@ -201,7 +201,7 @@ chmod +x monitoring.sh
 # Create backup script
 cat > backup.sh << 'EOF'
 #!/bin/bash
-# Backup script for OneU Voucher Assistant
+# Backup script for   Voucher Assistant
 
 BACKUP_DIR="backups/$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$BACKUP_DIR"
@@ -249,7 +249,7 @@ else
 fi
 
 # Test frontend
-if curl -s http://localhost:3000 | grep -q "OneU"; then
+if curl -s http://localhost:3000 | grep -q " "; then
     print_status "✓ Frontend working"
 else
     print_warning "⚠ Frontend issue"
@@ -258,7 +258,7 @@ fi
 # Deployment completion
 print_status "=== Deployment Complete ==="
 echo ""
-echo "🚀 OneU AI Voucher Assistant is now running in $ENVIRONMENT mode!"
+echo "🚀   AI Voucher Assistant is now running in $ENVIRONMENT mode!"
 echo ""
 echo "📱 Services:"
 echo "   Frontend: http://localhost:3000"

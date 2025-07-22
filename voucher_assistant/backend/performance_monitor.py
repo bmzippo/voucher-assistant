@@ -9,7 +9,7 @@ import asyncio
 logger = logging.getLogger(__name__)
 
 class PerformanceMonitor:
-    """Performance monitoring for OneU Voucher Assistant"""
+    """Performance monitoring for   Voucher Assistant"""
     
     def __init__(self, max_records=1000):
         self.max_records = max_records

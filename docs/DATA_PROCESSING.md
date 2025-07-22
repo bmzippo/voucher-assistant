@@ -1,6 +1,6 @@
 # 📊 Data Processing Guide
 
-> **OneU AI Voucher Assistant - Data Pipeline & Processing Guide**
+> **  AI Voucher Assistant - Data Pipeline & Processing Guide**
 
 ## 📋 Table of Contents
 - [Project Structure](#project-structure)
@@ -94,7 +94,7 @@ class ProcessingConfig:
 
 class DataProcessingPipeline:
     """
-    Main data processing pipeline for OneU voucher system
+    Main data processing pipeline for   voucher system
     Orchestrates: Loading → Cleaning → Validation → Embedding → Indexing
     """
     
@@ -230,7 +230,7 @@ async def main():
     import argparse
     import glob
     
-    parser = argparse.ArgumentParser(description="OneU Voucher Data Processing Pipeline")
+    parser = argparse.ArgumentParser(description="  Voucher Data Processing Pipeline")
     parser.add_argument("--files", nargs="+", help="Excel files to process")
     parser.add_argument("--directory", help="Directory containing Excel files")
     parser.add_argument("--batch-size", type=int, default=100, help="Batch size for processing")
@@ -304,7 +304,7 @@ class LoaderConfig:
 
 class DataLoader:
     """
-    Advanced data loader for OneU voucher system
+    Advanced data loader for   voucher system
     Supports: Excel, CSV, JSON with async processing
     """
     
@@ -460,7 +460,7 @@ class CleaningStats:
 
 class DataCleaner:
     """
-    Advanced data cleaning for OneU voucher system
+    Advanced data cleaning for   voucher system
     Handles: Vietnamese text, pricing, locations, duplicates
     """
     
@@ -754,7 +754,7 @@ class EmbeddingConfig:
 class EmbeddingProcessor:
     """
     Advanced embedding processor for Vietnamese voucher content
-    Optimized for OneU ecosystem with multi-field embedding strategy
+    Optimized for   ecosystem with multi-field embedding strategy
     """
     
     def __init__(self, config: EmbeddingConfig = None):

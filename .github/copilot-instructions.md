@@ -1,7 +1,7 @@
-Instruction for GitHub Copilot: Phát triển AI Trợ Lý Voucher cho OneU (Giai đoạn 1 - Responsive AI)
+Instruction for GitHub Copilot: Phát triển AI Trợ Lý Voucher cho   (Giai đoạn 1 - Responsive AI)
 1. Mục tiêu và Bối cảnh (Overall Goal and Context)
-• Mục tiêu chính: Xây dựng một AI Assistant thông minh ngay trên trang chi tiết voucher (PDP) của ứng dụng OneU. Mục tiêu là giúp người dùng dễ dàng hiểu và áp dụng các điều khoản & điều kiện (T&C) phức tạp của voucher, từ đó nâng cao trải nghiệm người dùng tại điểm bán.
-• Bối cảnh OneU: OneU là một hệ sinh thái đa chiều tập trung vào dịch vụ FnB, xử lý khối lượng dữ liệu khổng lồ từ triệu người dùng và merchant, bao gồm dữ liệu tài chính, hành vi và dữ liệu phi cấu trúc (UGC, video, review). AI được xem là hệ điều hành cốt lõi chứ không chỉ là một tính năng "nice-to-have".
+• Mục tiêu chính: Xây dựng một AI Assistant thông minh ngay trên trang chi tiết voucher (PDP) của ứng dụng  . Mục tiêu là giúp người dùng dễ dàng hiểu và áp dụng các điều khoản & điều kiện (T&C) phức tạp của voucher, từ đó nâng cao trải nghiệm người dùng tại điểm bán.
+• Bối cảnh  :   là một hệ sinh thái đa chiều tập trung vào dịch vụ FnB, xử lý khối lượng dữ liệu khổng lồ từ triệu người dùng và merchant, bao gồm dữ liệu tài chính, hành vi và dữ liệu phi cấu trúc (UGC, video, review). AI được xem là hệ điều hành cốt lõi chứ không chỉ là một tính năng "nice-to-have".
 2. Các Tính năng Cốt lõi của AI Trợ Lý Voucher (Core Features) GitHub Copilot, hãy tập trung phát triển các tính năng sau:
 • Tóm tắt điểm chính (Key Point Summary):
     ◦ Phát triển khả năng cho AI để tự động đọc và tóm tắt các điều kiện quan trọng nhất của voucher từ nội dung chi tiết. Ví dụ: "Áp dụng cho hóa đơn trên 500K", "Không dùng cuối tuần", "Cần đặt bàn trước".
@@ -15,7 +15,7 @@ Instruction for GitHub Copilot: Phát triển AI Trợ Lý Voucher cho OneU (Gia
     ◦ Lựa chọn: Triển khai LLM trên Vertex Endpoint. Đây là lựa chọn được ưu tiên để tiết kiệm chi phí, vì tác vụ hỏi-đáp và tóm tắt trong giai đoạn này gói gọn trong thông tin đã được cung cấp (RAG).
     ◦ Kỹ thuật: Tập trung vào việc triển khai Retrieval Augmented Generation (RAG).
 • RAG (Retrieval Augmented Generation):
-    ◦ Embedding thông tin: Áp dụng kỹ thuật embedding để chuyển đổi thông tin chi tiết voucher (bao gồm PDP, các điều khoản chung, hướng dẫn sử dụng, và các "knowhow" riêng của OneU như Upoint, phương thức thanh toán) thành các vector số.
+    ◦ Embedding thông tin: Áp dụng kỹ thuật embedding để chuyển đổi thông tin chi tiết voucher (bao gồm PDP, các điều khoản chung, hướng dẫn sử dụng, và các "knowhow" riêng của   như Upoint, phương thức thanh toán) thành các vector số.
     ◦ Knowledge Base: Lưu trữ toàn bộ các vector embedding này trong một Vector Database.
     ◦ Luồng xử lý: Khi người dùng đặt câu hỏi, hệ thống sẽ thực hiện tìm kiếm ngữ nghĩa (semantic search) trong Vector Database để tìm kiếm các thông tin liên quan nhất. Sau đó, các thông tin liên quan này sẽ được cung cấp cho LLM cùng với câu hỏi của người dùng để tạo ra câu trả lời chính xác, giảm thiểu hiện tượng "ảo giác" (hallucinations).
 • Vector Database:
@@ -23,7 +23,7 @@ Instruction for GitHub Copilot: Phát triển AI Trợ Lý Voucher cho OneU (Gia
 4. Các Giai đoạn Phát triển (Phased Development for AI Voucher Assistant)
 GitHub Copilot, hãy thực hiện phát triển theo các bước sau trong Giai đoạn 1 (Responsive AI):
 • Giai đoạn 1.1: Chuẩn bị Dữ liệu và Xây dựng Knowledge Base
-    ◦ Mô tả: Thu thập và chuẩn hóa tất cả dữ liệu liên quan đến voucher từ các nguồn nội bộ của OneU (PDP, T&C, quy định Upoint, thanh toán).
+    ◦ Mô tả: Thu thập và chuẩn hóa tất cả dữ liệu liên quan đến voucher từ các nguồn nội bộ của   (PDP, T&C, quy định Upoint, thanh toán).
     ◦ Thực hiện:
         ▪ Viết script để trích xuất dữ liệu voucher từ các hệ thống hiện có.
         ▪ Xây dựng pipeline để làm sạch, cấu trúc hóa dữ liệu.
@@ -41,7 +41,7 @@ GitHub Copilot, hãy thực hiện phát triển theo các bước sau trong Gia
             • Gửi câu hỏi của người dùng và các đoạn văn bản liên quan này (context) tới LLM để tạo ra câu trả lời.
             • Đảm bảo cấu hình LLM để ưu tiên sử dụng ngữ cảnh được cung cấp để giảm thiểu "ảo giác".
 • Giai đoạn 1.3: Tích hợp Giao diện người dùng (UI Integration)
-    ◦ Mô tả: Đưa AI Assistant vào trang chi tiết voucher trên ứng dụng OneU.
+    ◦ Mô tả: Đưa AI Assistant vào trang chi tiết voucher trên ứng dụng  .
     ◦ Thực hiện:
         ▪ Thiết kế và triển khai một component UI (ví dụ: một widget chat) trên trang chi tiết voucher (PDP).
         ▪ Đảm bảo component này có thể hiển thị phần tóm tắt chính của voucher tự động.

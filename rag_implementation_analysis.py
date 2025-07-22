@@ -314,7 +314,7 @@ def final_rag_evidence_summary():
 def main():
     """Main analysis function"""
     print("🎯 RAG IMPLEMENTATION EVIDENCE ANALYSIS")
-    print("🚀 Vector Search cho AI Trợ Lý Voucher OneU")
+    print("🚀 Vector Search cho AI Trợ Lý Voucher  ")
     print("📅", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     
     analyze_rag_implementation()
@@ -330,7 +330,7 @@ def main():
     print("✅ Vector Search đã triển khai HOÀN CHỈNH RAG pipeline")
     print("✅ Có dẫng chứng code cụ thể cho từng bước R-A-G")
     print("✅ Performance và quality metrics chứng minh hiệu quả")
-    print("✅ Ready for production deployment trong OneU AI Assistant")
+    print("✅ Ready for production deployment trong   AI Assistant")
 
 if __name__ == "__main__":
     main()
