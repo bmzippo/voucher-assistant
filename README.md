@@ -1,6 +1,6 @@
-# OneU AI Voucher Assistant 🎯
+# Voucher Assistant 🎯
 
-> **Hệ thống AI Trợ Lý Voucher thông minh cho OneU Ecosystem - Giai đoạn 1: Responsive AI**
+> **Hệ thống AI Trợ Lý Voucher thông minh cho Ecosystem - Giai đoạn 1: Responsive AI**
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.68+-green.svg)](https://fastapi.tiangolo.com)
@@ -9,7 +9,7 @@
 
 ## 🚀 Tổng Quan
 
-OneU AI Voucher Assistant là một hệ thống AI thông minh được thiết kế để giúp người dùng dễ dàng tìm kiếm và hiểu các voucher phức tạp trong hệ sinh thái OneU. Hệ thống sử dụng công nghệ **Hybrid Search** kết hợp giữa **Semantic Search** và **Exact Text Search** để mang lại trải nghiệm tìm kiếm tối ưu.
+Voucher Assistant là một hệ thống AI thông minh được thiết kế để giúp người dùng dễ dàng tìm kiếm và hiểu các voucher phức tạp trong hệ sinh thái. Hệ thống sử dụng công nghệ **Hybrid Search** kết hợp giữa **Semantic Search** và **Exact Text Search** để mang lại trải nghiệm tìm kiếm tối ưu.
 
 ## ✨ Tính Năng Chính
 
@@ -199,7 +199,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- **Tech Lead**: OneU Engineering Team
+- **Tech Lead**:  Engineering Team
 - **AI/ML**: Advanced Vector Search Implementation
 - **Frontend**: React & TypeScript Development  
 - **Backend**: FastAPI & Elasticsearch Integration
@@ -208,8 +208,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/bmzippo/voucher-assistant/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/bmzippo/voucher-assistant/discussions)
-- **Email**: support@oneu.com
+- **Email**: support@.com
 
 ---
 
-**Built with ❤️ for OneU Ecosystem**
+**Built with ❤️ for   Ecosystem**
