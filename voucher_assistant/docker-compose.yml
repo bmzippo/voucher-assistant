@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: voucher_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - voucher_network
+
+  backend:
+    build: ./backend
+    container_name: voucher_backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/gcp-key.json
+    volumes:
+      - ./backend:/app
+      - ./config/gcp-key.json:/app/credentials/gcp-key.json
+    networks:
+      - voucher_network
+
+  frontend:
+    build: ./frontend
+    container_name: voucher_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - voucher_network
+
+volumes:
+  elasticsearch_data:
+
+networks:
+  voucher_network:
+    driver: bridge
